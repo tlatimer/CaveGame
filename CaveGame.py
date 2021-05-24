@@ -2,9 +2,14 @@ from random import choices
 from copy import copy
 from collections import deque
 
+from pprint import pprint
+
 
 def main():
-    b = Board(120, 40)
+    w = 120
+    h = 30
+    b = Board(w, h)
+    b.print_board()
 
 
 class Board:
@@ -22,8 +27,16 @@ class Board:
 
         self.generate_cave()
         self.groups = self.get_groups()
-        self.print_board(True)
-        print(len(self.groups[0]) / (self.w * self.h))
+
+        self.score = len(self.groups[0]) / len(self.groups[1])
+        self.score2 = len(self.groups[0]) / (self.w * self.h)  # < 0.52:
+        if self.score < 40 or self.score2 < 0.5:
+            # redo the generation
+            print('Rebuilding...')
+            self.__init__(w, h)
+
+        self.close_groups()
+
 
     def print_board(self, with_groups=False):
         for y in range(self.h):
@@ -62,7 +75,7 @@ class Board:
             elif len(self.get_neighbors(x, y, walls_old)) > 4:
                 self.walls[x][y] = False
 
-    def get_neighbors(self, x, y, walls_grid=None):
+    def get_neighbors(self, x, y, walls_grid=None, corners=True):
         if not walls_grid:
             walls_grid = self.walls
 
@@ -70,6 +83,8 @@ class Board:
         for xvar in [-1, 0, 1]:
             for yvar in [-1, 0, 1]:
                 if (xvar, yvar) == (0, 0):
+                    continue
+                elif not corners and (xvar + yvar in [-2, 0, 2]):
                     continue
                 if not walls_grid[x + xvar][y + yvar]:
                     neighbors.append((x + xvar, y + yvar))
@@ -95,7 +110,7 @@ class Board:
                     visited.add(cur)
 
                     cur_x, cur_y = cur
-                    for n in self.get_neighbors(cur_x, cur_y):
+                    for n in self.get_neighbors(cur_x, cur_y, corners=False):
                         if n not in visited and n not in to_visit:
                             to_visit.append(n)
 
@@ -103,6 +118,11 @@ class Board:
 
         groups.sort(key=lambda i: len(i), reverse=True)
         return groups
+
+    def close_groups(self):
+        for g in self.groups[1:]:
+            for x, y in g:
+                self.walls[x][y] = True
 
 
 if __name__ == '__main__':
