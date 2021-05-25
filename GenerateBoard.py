@@ -1,5 +1,4 @@
 from random import choices
-from copy import copy
 from collections import deque
 
 
@@ -12,11 +11,11 @@ def main():
 
 class GenerateBoard:
     def __init__(self, w, h):
-        self.w = w
-        self.h = h
+        self.w = int(w)
+        self.h = int(h)
         self.walls = []
-        for x in range(w):
-            self.walls.append([True] * h)
+        for x in range(self.w):
+            self.walls.append([True] * self.h)
 
         self.all_coords = []  # valid internal coords
         for x in range(1, self.w - 1):
@@ -26,6 +25,7 @@ class GenerateBoard:
         self.generate_cave()
         self.groups = self.get_groups()
 
+        # TODO: instead of generating until it meets criteria, generate n boards and pull the best.
         self.score = len(self.groups[0]) / len(self.groups[1])
         self.score2 = len(self.groups[0]) / (self.w * self.h)
         if self.score < 40 or self.score2 < 0.5:
@@ -64,7 +64,7 @@ class GenerateBoard:
             self.do_ca_step()  # ca = cellular automata
 
     def do_ca_step(self):
-        walls_old = copy(self.walls)
+        walls_old = self.walls.copy()
         for x, y in self.all_coords:
             if len(self.get_neighbors(x, y, walls_old)) < 3:
                 self.walls[x][y] = True
@@ -120,6 +120,16 @@ class GenerateBoard:
         for g in self.groups[1:]:
             for x, y in g:
                 self.walls[x][y] = True
+
+    def get_walls_coords(self):
+        coords = []
+        for x in range(self.w):
+            for y in range(self.h):
+                if self.walls[x][y]:
+                    coords.append((x, y))
+
+        return coords
+
 
 
 if __name__ == '__main__':
