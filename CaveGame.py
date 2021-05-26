@@ -1,17 +1,17 @@
 import pygame as pg
 import pygame.event
 
-from old import GenerateBoard as gb
-# import GenerateBoard as gb
+import GenerateBoard as gb
 
 NUM_BOARDS_TO_TRY = 20
 MIN_NUM_TILES = 10000
+
 
 class CaveGame:
     def __init__(self):
         pg.init()
         pg.display.set_caption('Cave Game')
-        self.screen = pg.display.set_mode((400, 400), pg.RESIZABLE)
+        self.screen = pg.display.set_mode((1536, 800), pg.RESIZABLE)
 
         self.wait_for_resize()
         # TODO: set mode to static size and/or scaled?
@@ -19,7 +19,9 @@ class CaveGame:
         self.tile_size = None  # set when board is loaded
         self.board = self.load_board()
 
-        pygame.event.wait()
+        event = pygame.event.wait()
+        if event.key == pg.K_SPACE:
+            self.__init__()
 
     def wait_for_resize(self):
         is_resized = False
@@ -30,7 +32,7 @@ class CaveGame:
             self.screen.blit(bg, (0, 0))
 
             message = "Please resize window then press SPACE."
-            text = pg.font.Font(None, 24).render(message , 1, 'white')
+            text = pg.font.Font(None, 24).render(message, 1, 'white')
 
             text_pos = text.get_rect(centerx=bg.get_width() / 2, centery=bg.get_height() / 2)
             self.screen.blit(text, text_pos)
@@ -74,8 +76,9 @@ class CaveGame:
 
             # gen the board
             cur_board = gb.GenerateBoard(x, y)
-            if cur_board.score2 > max_score:
+            if cur_board.score > max_score:
                 max_board = cur_board
+                max_score = cur_board.score
 
             # redraw after the generation
             self.screen.blit(bg, (0, 0))

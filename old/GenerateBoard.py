@@ -1,12 +1,11 @@
-from random import choices
 from collections import deque
+from random import choices
 
 
 def main():
     w = 140
     h = 82
     gb = GenerateBoard(w, h)
-    gb.print_board()
 
 
 class GenerateBoard:
@@ -26,14 +25,10 @@ class GenerateBoard:
         self.groups = self.get_groups()
 
         if len(self.groups) > 1:
-            self.score = len(self.groups[0]) / len(self.groups[1])
-        self.score2 = len(self.groups[0]) / (self.w * self.h)
-        # if self.score < 40 or self.score2 < 0.5:
-        #     # redo the generation
-        #     print('Rebuilding...')
-        #     self.__init__(w, h)
+            self.score2 = len(self.groups[0]) / len(self.groups[1])
+        self.score = len(self.groups[0]) / (self.w * self.h)
 
-        self.close_groups()
+        # self.close_groups()
 
     def generate_cave(self):
         # initialize to random
@@ -110,7 +105,6 @@ class GenerateBoard:
                     coords.append((x, y))
 
         return coords
-
 
 
 if __name__ == '__main__':
