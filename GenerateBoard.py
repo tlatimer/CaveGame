@@ -26,12 +26,13 @@ class GenerateBoard:
         self.groups = self.get_groups()
 
         # TODO: instead of generating until it meets criteria, generate n boards and pull the best.
-        self.score = len(self.groups[0]) / len(self.groups[1])
+        if len(self.groups) > 1:
+            self.score = len(self.groups[0]) / len(self.groups[1])
         self.score2 = len(self.groups[0]) / (self.w * self.h)
-        if self.score < 40 or self.score2 < 0.5:
-            # redo the generation
-            print('Rebuilding...')
-            self.__init__(w, h)
+        # if self.score < 40 or self.score2 < 0.5:
+        #     # redo the generation
+        #     print('Rebuilding...')
+        #     self.__init__(w, h)
 
         self.close_groups()
 
