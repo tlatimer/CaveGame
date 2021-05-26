@@ -1,9 +1,11 @@
 import pygame as pg
+import pygame.event
 
-import GenerateBoard as gb
+from old import GenerateBoard as gb
+# import GenerateBoard as gb
 
 NUM_BOARDS_TO_TRY = 20
-NUM_TILES = 10000
+MIN_NUM_TILES = 10000
 
 class CaveGame:
     def __init__(self):
@@ -12,9 +14,12 @@ class CaveGame:
         self.screen = pg.display.set_mode((400, 400), pg.RESIZABLE)
 
         self.wait_for_resize()
+        # TODO: set mode to static size and/or scaled?
 
         self.tile_size = None  # set when board is loaded
         self.board = self.load_board()
+
+        pygame.event.wait()
 
     def wait_for_resize(self):
         is_resized = False
@@ -83,13 +88,16 @@ class CaveGame:
         sx, sy = self.screen.get_size()
         x, y = 1, 1
 
-        while x * y < NUM_TILES:
+        while x * y < MIN_NUM_TILES:
             if x / y > sx / sy:
                 y += 1
             else:
                 x += 1
 
         tile_size = int(min(sx / x, sy / y))
+
+        x = int(sx / tile_size)
+        y = int(sy / tile_size)
 
         print(f'Calculated {x}*{y} tiles for the board.')
         return x, y, tile_size
@@ -103,6 +111,7 @@ class CaveGame:
                 self.tile_size,
             )
             pg.draw.rect(self.screen, 'black', r)
+
 
 if __name__ == '__main__':
     CaveGame()
