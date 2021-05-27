@@ -27,7 +27,7 @@ class CaveGame:
         self.board = gb.GenerateBoard(*gb_args)
 
         self.screen.blit(bg, (0, 0))
-        # reblank background before drawing tiles
+        # re-blank background before drawing tiles
         for x, y in self.board.get_walls_coords():
             r = pg.Rect(
                 x * tile_size,

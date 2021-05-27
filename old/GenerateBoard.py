@@ -61,14 +61,14 @@ class GenerateBoard:
             walls_grid = self.walls
 
         neighbors = []
-        for xvar in [-1, 0, 1]:
-            for yvar in [-1, 0, 1]:
-                if (xvar, yvar) == (0, 0):
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if (dx, dy) == (0, 0):
                     continue
-                elif not corners and (xvar + yvar in [-2, 0, 2]):
+                elif not corners and (dx + dy in [-2, 0, 2]):
                     continue
-                if not walls_grid[x + xvar][y + yvar]:
-                    neighbors.append((x + xvar, y + yvar))
+                if not walls_grid[x + dx][y + dy]:
+                    neighbors.append((x + dx, y + dy))
 
         return neighbors
 
