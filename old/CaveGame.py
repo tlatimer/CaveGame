@@ -1,6 +1,6 @@
 import pygame as pg
 
-import GenerateBoard as gb
+from old import GenerateBoard as gb
 
 
 class CaveGame:
@@ -14,7 +14,7 @@ class CaveGame:
         bg = pg.Surface(self.screen.get_size())
         bg = bg.convert()
         bg.fill('blue4')
-        self.screen.blit(bg, (0,0))
+        self.screen.blit(bg, (0, 0))
 
         loading = pg.font.Font(None, 36).render("LOADING", 1, 'white')
         loading_pos = loading.get_rect(centerx=bg.get_width() / 2, centery=bg.get_height() / 2)
@@ -22,7 +22,7 @@ class CaveGame:
         pg.display.flip()
         # leave loading screen up while generating board
 
-        tile_size = 16 # TODO: make this dynamic
+        tile_size = 16  # TODO: make this dynamic
         gb_args = (self.screen.get_width() / tile_size, self.screen.get_height() / tile_size)
         self.board = gb.GenerateBoard(*gb_args)
 
@@ -53,7 +53,6 @@ class CaveGame:
                     self.__init__()
         finally:
             pg.quit()
-
 
 
 if __name__ == '__main__':

@@ -28,7 +28,15 @@ class GenerateBoard:
             self.score2 = len(self.groups[0]) / len(self.groups[1])
         self.score = len(self.groups[0]) / (self.w * self.h)
 
-        # self.close_groups()
+        self.close_groups()
+
+        self.alive_cells = set()
+        for x, y in self.all_coords:
+            if not self.walls[x][y]:
+                self.alive_cells.add((x, y))
+
+    def get_score(self):
+        return self.score2
 
     def generate_cave(self):
         # initialize to random
@@ -96,15 +104,6 @@ class GenerateBoard:
         for g in self.groups[1:]:
             for x, y in g:
                 self.walls[x][y] = True
-
-    def get_walls_coords(self):
-        coords = []
-        for x in range(self.w):
-            for y in range(self.h):
-                if self.walls[x][y]:
-                    coords.append((x, y))
-
-        return coords
 
 
 if __name__ == '__main__':

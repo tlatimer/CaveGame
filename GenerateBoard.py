@@ -1,8 +1,10 @@
 from collections import deque
 from random import choices
 
-INITIAL_ALIVE = 0.62
+INITIAL_ALIVE = 0.6
 CA_STEPS = 2
+
+NUM_BINS = 4
 
 
 class GenerateBoard:
@@ -21,11 +23,10 @@ class GenerateBoard:
         for _ in range(CA_STEPS):
             self.do_ca_step()
 
-        self.groups = self.get_groups()
+        groups = self.get_groups()
+        self.close_groups(groups)
 
-        self.score = self.get_score()
-
-        self.close_groups()
+        # self.score = self.get_score()
 
     def get_random_alive(self):
         num_to_live = int(self.w * self.h * INITIAL_ALIVE)
@@ -91,34 +92,70 @@ class GenerateBoard:
 
         return deltas
 
-    def close_groups(self):
-        for g in self.groups[1:]:
+    def close_groups(self, groups):
+        for g in groups[1:]:
             for cell in g:
                 self.alive_cells.remove(cell)
 
     def get_score(self):
-        s1 = len(self.alive_cells) / (self.w * self.h) * 100
-        s2 = 0
-        if len(self.groups) > 1:
-            s2 = len(self.groups[0]) / len(self.groups[1])
+        #  Attempt 1
+        # s1 = len(self.alive_cells) / (self.w * self.h) * 100
+        # s2 = 0
+        # if len(self.groups) > 1:
+        #     s2 = len(self.groups[0]) / len(self.groups[1])
+        #
+        # print(f'{s1:4}\t{s2:4}')
+        #
+        # return s1 * 15 + s2 * 40
 
-        print(f'{s1:4}\t{s2:4}')
+        #  Attempt 2
+        # min_x = self.w
+        # min_y = self.h
+        # max_x = 0
+        # max_y = 0
+        # for x, y in self.alive_cells:
+        #     min_x = min(x, min_x)
+        #     min_y = min(y, min_y)
+        #     max_x = max(x, max_x)
+        #     max_y = max(y, max_y)
+        #
+        # score = min_x
+        # score += min_y
+        # score += self.w - max_x
+        # score += self.h - max_y
+        #
+        # return -score
 
-        return s1 * 15 + s2 * 40
+        #  Attempt 3
+        bin_w = self.w / NUM_BINS
+        bin_h = self.h / NUM_BINS
 
-    def get_tiles(self):
-        return self.alive_cells
+        bins = [[list() for x in range(NUM_BINS)] for y in range(NUM_BINS)]
 
-    def get_walls_coords(self):
-        coords = []
-        for x in range(self.w):
-            for y in range(self.h):
-                if (x, y) not in self.alive_cells:
-                    coords.append((x, y))
+        for cell in self.alive_cells:
+            x = int(cell[0] / bin_w)
+            y = int(cell[1] / bin_h)
+            bins[x][y].append(cell)
 
-        return coords
+        n = NUM_BINS - 1
+        corners = [
+            (0, 0),
+            (0, n),
+            (n, 0),
+            (n, n)
+        ]
+
+        bin_num_tiles = bin_w * bin_h
+        score = 1.0
+        for x, y in corners:
+            corner_score = len(bins[x][y]) / bin_num_tiles
+            print(f'score: {corner_score:3}')
+            score += corner_score / 2
+
+        print(f'Total: {score} \n')
+        return score
 
 
 if __name__ == '__main__':
     for _ in range(100):
-        GenerateBoard(140, 82).get_walls_coords()
+        GenerateBoard(140, 82)
