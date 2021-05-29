@@ -11,7 +11,7 @@ class CaveGame:
         pg.init()
 
         pg.display.set_caption('Cave Game')
-        self.screen = pg.display.set_mode((838, 978), pg.RESIZABLE)
+        self.screen = pg.display.set_mode((600, 400), pg.RESIZABLE)
 
         self.wait_for_resize()
         # TODO: set mode to static size and/or scaled?
