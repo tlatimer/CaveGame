@@ -115,10 +115,9 @@ class GenerateBoard:
             (n, n)
         ]
 
+        corner_scores = []
         bin_num_tiles = bin_w * bin_h
-        score = 1.0
         for x, y in corners:
-            corner_score = len(bins[x][y]) / bin_num_tiles
-            score += corner_score / 2
+            corner_scores.append(len(bins[x][y]) / bin_num_tiles)
 
-        return score
+        return min(corner_scores)
