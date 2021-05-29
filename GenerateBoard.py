@@ -26,7 +26,7 @@ class GenerateBoard:
 
         self.close_groups()
 
-    def get_random_alive(self):
+    def get_random_alive(self):  # TODO: add a way to specify seed
         num_to_live = int(self.w * self.h * INITIAL_ALIVE)
         return set(choices(self.all_cells, k=num_to_live))
 
