@@ -44,8 +44,5 @@ class CaveGame:
                     is_resized = True
 
 
-
-
-
 if __name__ == '__main__':
     CaveGame()
