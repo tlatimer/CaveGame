@@ -3,9 +3,6 @@ import pygame as pg
 import LoadBoard
 
 
-# test
-
-
 class CaveGame:
     def __init__(self):
         pg.init()
@@ -17,7 +14,7 @@ class CaveGame:
         # TODO: set mode to static size and/or scaled?
 
         lb = LoadBoard.LoadBoard(self.screen)
-        board = lb.board
+        board = lb.board  # this is a set of coordinates of 'live' / empty cells.
 
     def wait_for_resize(self):
         is_resized = False
