@@ -1,26 +1,30 @@
 import pygame as pg
 
 import GenerateBoard
+import Tile
 
-NUM_BOARDS_TO_TRY = 20
+NUM_BOARDS_TO_TRY = 7
 MIN_NUM_TILES = 10000
 
 
+# TODO: reduce ambiguity between board: 'set of live cell coords' and board: 'list of Tile objects'
 class LoadBoard:
-    def __init__(self, screen):
-        self.screen = screen
+    def __init__(self, draw):
+        self.draw = draw
         self.clock = pg.time.Clock()
 
         board_w, board_h, self.tile_size = self.calc_tiles()
         board_approved = False
         while not board_approved:
-            self.board = self.load_board(board_w, board_h)
-            board_approved = self.approve_board(self.board)
+            alive_board = self.load_board(board_w, board_h)
+            board_approved = self.approve_board(alive_board)
 
         print('Board Approved!')
+        self.draw_live_cells(alive_board)
+        self.tiles = self.alive_to_tiles(alive_board.alive_cells)
 
     def calc_tiles(self):
-        sx, sy = self.screen.get_size()
+        sx, sy = self.draw.screen.get_size()
         x, y = 1, 1
 
         while x * y < MIN_NUM_TILES:  # TODO: Can this be done with simple math? (not that it takes that long)
@@ -50,14 +54,14 @@ class LoadBoard:
 
             # gen the board
             cur_board = GenerateBoard.GenerateBoard(board_w, board_h)
-            self.draw_live_cells(cur_board, "GENERATING")
+            self.draw_live_cells(cur_board, 'GENERATING')
 
             for _2 in range(GenerateBoard.CA_STEPS):
                 cur_board.do_ca_step()
-                self.draw_live_cells(cur_board, "GENERATING")
+                self.draw_live_cells(cur_board, 'GENERATING')
 
             cur_board.close_groups()
-            self.draw_live_cells(cur_board, "GENERATING")
+            self.draw_live_cells(cur_board, 'GENERATING')
 
             cur_score = cur_board.get_score()
             if cur_score > max_score:
@@ -67,16 +71,7 @@ class LoadBoard:
         return max_board
 
     def draw_live_cells(self, board, text=None):
-        bg = pg.Surface(self.screen.get_size())
-        bg = bg.convert()
-        bg.fill('black')
-
-        # noinspection PyTypeChecker
-        text = pg.font.Font(None, 36).render(text, True, 'white')
-        text_pos = text.get_rect(centerx=bg.get_width() / 2, centery=bg.get_height() / 2)
-
-        self.screen.blit(bg, (0, 0))
-
+        self.draw.draw_bg()
         for x, y in board.alive_cells:
             r = pg.Rect(
                 x * self.tile_size,
@@ -84,13 +79,13 @@ class LoadBoard:
                 self.tile_size,
                 self.tile_size,
             )
-            pg.draw.rect(self.screen, 'blue4', r)
+            pg.draw.rect(self.draw.screen, 'blue4', r)
 
         if text:
-            self.screen.blit(text, text_pos)
+            self.draw.draw_text(text)
 
         pg.display.flip()
-        self.clock.tick(12)
+        # self.clock.tick(12)
 
     def approve_board(self, board):
         self.draw_live_cells(board, "[A]pprove or [R]eject?")
@@ -105,3 +100,26 @@ class LoadBoard:
                     return True
                 elif event.key == pg.K_r:
                     return False
+
+    def alive_to_tiles(self, board):
+        tiles = {}
+
+        # populate tiles
+        for pos in board:
+            tiles[pos] = Tile.Tile(pos, self.tile_size)
+
+        # populate tiles.neighbors
+        for pos in board:
+            x, y = pos
+            neighbor_pos = [
+                (x + 1, y),
+                (x - 1, y),
+                (x, y + 1),
+                (x, y - 1),
+            ]
+
+            for n in neighbor_pos:
+                if n in board:
+                    tiles[pos].neighbors.add(n)
+
+        return tiles
