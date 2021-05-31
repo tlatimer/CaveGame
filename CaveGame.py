@@ -24,7 +24,15 @@ class CaveGame:
             self.players.append(Player(pos, lb.tile_size))
 
         self.draw_board()
-        pg.time.wait(10000)
+        while True:
+            event = pg.event.wait()
+            if event.type == pg.QUIT:
+                pg.quit()
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    pg.quit()
+                elif event.key == pg.K_SPACE:
+                    break
 
     def get_player_pos_s(self, num_players):
         player_pos_s = []

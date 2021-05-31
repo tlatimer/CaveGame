@@ -4,9 +4,9 @@ import GenerateBoard
 import Tile
 
 NUM_BOARDS_TO_TRY = 20
-MIN_NUM_TILES = 10000
+MIN_NUM_TILES = 5000
 
-SHOW_GEN = False
+SHOW_GEN = True
 
 
 # TODO: reduce ambiguity between board: 'set of live cell coords' and board: 'list of Tile objects'
@@ -90,7 +90,7 @@ class LoadBoard:
             self.draw.draw_text(text)
 
         pg.display.flip()
-        # self.clock.tick(12)
+        self.clock.tick(12)
 
     def approve_board(self, board):
         self.draw_live_cells(board, "[A]pprove or [R]eject?")
