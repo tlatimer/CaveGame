@@ -3,8 +3,10 @@ import pygame as pg
 import GenerateBoard
 import Tile
 
-NUM_BOARDS_TO_TRY = 7
+NUM_BOARDS_TO_TRY = 20
 MIN_NUM_TILES = 10000
+
+SHOW_GEN = False
 
 
 # TODO: reduce ambiguity between board: 'set of live cell coords' and board: 'list of Tile objects'
@@ -43,7 +45,7 @@ class LoadBoard:
 
     def load_board(self, board_w, board_h):
         max_board = None
-        max_score = 0
+        max_score = -1
 
         for _ in range(NUM_BOARDS_TO_TRY):
             # give an opportunity to quit while generating
@@ -68,9 +70,12 @@ class LoadBoard:
                 max_board = cur_board
                 max_score = cur_score
 
+        assert len(max_board.alive_cells) > 0
         return max_board
 
     def draw_live_cells(self, board, text=None):
+        if text == 'GENERATING' and not SHOW_GEN:
+            return
         self.draw.draw_bg()
         for x, y in board.alive_cells:
             r = pg.Rect(

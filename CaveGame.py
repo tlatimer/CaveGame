@@ -7,7 +7,7 @@ from Draw import Draw
 from LoadBoard import LoadBoard
 from Player import Player
 
-NUM_PLAYERS = 5
+NUM_PLAYERS = 10
 
 
 class CaveGame:
@@ -24,6 +24,7 @@ class CaveGame:
             self.players.append(Player(pos, lb.tile_size))
 
         self.draw_board()
+        pg.time.wait(10000)
 
     def get_player_pos_s(self, num_players):
         player_pos_s = []
@@ -45,23 +46,34 @@ class CaveGame:
             to_visit.append(deque())
             to_visit[i].append(players[i])
 
+        flip_counter = 0
+
         while unvisited:
-            for i in range(len(players)):
-                if len(to_visit[i]) == 0:
+            for que in to_visit:
+                if len(que) == 0:
                     continue
-                cur = to_visit[i].popleft()
+                cur = que.popleft()
                 if cur not in unvisited:
                     continue
 
-                pg.draw.rect(self.draw.screen, 'yellow', self.tiles[cur].get_rect())
-
                 unvisited.remove(cur)
                 visited.append(cur)
+
+                if cur not in players:  # TODO: figure out why this isn't working
+                    pg.draw.rect(self.draw.screen, 'red', self.tiles[cur].get_rect())
+
                 for n in self.tiles[cur].neighbors:
                     if n in unvisited:
-                        to_visit[i].append(n)
-            if len(unvisited) % 10 == 0:  # TODO: turn this into some kind of tick based thing
-                pg.display.flip()
+                        que.append(n)
+
+                flip_counter += 1
+                if flip_counter % 20 == 0:
+                    pg.display.flip()
+
+            event = pg.event.get()
+            for e in event:
+                if e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE:
+                    pg.quit()
 
         return visited[-1]
 
@@ -70,7 +82,7 @@ class CaveGame:
             pg.draw.rect(self.draw.screen, 'blue4', tile.get_rect())
 
         for p in self.players:
-            pg.draw.rect(self.draw.screen, 'red', p.get_rect())
+            pg.draw.rect(self.draw.screen, 'yellow', p.get_rect())
 
         pg.display.flip()
 

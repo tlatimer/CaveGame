@@ -4,7 +4,7 @@ from random import choices
 INITIAL_ALIVE = 0.6
 CA_STEPS = 2
 
-NUM_BINS = 4
+NUM_BINS = 3
 
 
 class GenerateBoard:
