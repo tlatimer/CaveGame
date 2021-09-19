@@ -3,7 +3,7 @@ import pygame as pg
 import GenerateBoard
 import Tile
 
-NUM_BOARDS_TO_TRY = 20
+NUM_BOARDS_TO_TRY = 10
 MIN_NUM_TILES = 5000
 
 SHOW_GEN = True
@@ -49,10 +49,15 @@ class LoadBoard:
 
         for _ in range(NUM_BOARDS_TO_TRY):
             # give an opportunity to quit while generating
-            event = pg.event.get()
-            for e in event:
+            events = pg.event.get()
+            for e in events:
                 if e.type == pg.QUIT or e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE:
                     pg.quit()
+                elif e.type == pg.KEYDOWN and e.key == pg.K_SPACE:
+                    global SHOW_GEN
+                    SHOW_GEN = False
+                    self.draw.draw_bg()
+                    pg.display.flip()
 
             # gen the board
             cur_board = GenerateBoard.GenerateBoard(board_w, board_h)

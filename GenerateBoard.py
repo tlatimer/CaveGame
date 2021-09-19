@@ -4,6 +4,7 @@ from random import choices
 INITIAL_ALIVE = 0.6
 CA_STEPS = 2
 
+# how it defines what a 'good' map is. it splits it into an NxN grid and finds the population of the corners
 NUM_BINS = 3
 
 

@@ -2,11 +2,8 @@ import pygame as pg
 
 
 class Draw:
-    def __init__(self):
-        pg.init()
-        pg.display.set_caption('Cave Game')
-        self.screen = pg.display.set_mode((600, 400), pg.RESIZABLE)
-        self.clock = pg.time.Clock()
+    def __init__(self, screen):
+        self.screen = screen
 
     def draw_bg(self, color='black'):
         bg = pg.Surface(self.screen.get_size())
