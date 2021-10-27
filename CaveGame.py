@@ -7,7 +7,7 @@ from Draw import Draw
 from LoadBoard import LoadBoard
 from Player import Player
 
-NUM_PLAYERS = 10
+NUM_PLAYERS = 11
 
 
 class CaveGame:
